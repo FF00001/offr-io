@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "8fb890a0-de80-45fd-9f55-1dc28d6c6c97",
+    "enterpriseId": "9b16efa3-f1c0-477d-a360-79ad9bb46b8a",
+    "email": "lucasdelaab@gmail.com",
+    "token": "8fb890a0-de80-45fd-9f55-1dc28d6c6c97",
+    "used": false,
+    "createdAt": "2025-11-06T19:50:13.431Z"
+  }
+]

@@ -67,6 +67,12 @@ export function updateUser(id: string, updates: Partial<User>): void {
   }
 }
 
+export function deleteUser(id: string): void {
+  const users = getUsers();
+  const filtered = users.filter(u => u.id !== id);
+  writeData(DB_FILES.users, filtered);
+}
+
 // Quotes
 export function getQuotesByUserId(userId: string): SavedQuote[] {
   const quotes = readData<SavedQuote>(DB_FILES.quotes);
@@ -145,4 +151,10 @@ export function markInvitationAsUsed(token: string): void {
     invitations[index].used = true;
     writeData(DB_FILES.invitations, invitations);
   }
+}
+
+export function deleteInvitation(id: string): void {
+  const invitations = getInvitations();
+  const filtered = invitations.filter(i => i.id !== id);
+  writeData(DB_FILES.invitations, filtered);
 }

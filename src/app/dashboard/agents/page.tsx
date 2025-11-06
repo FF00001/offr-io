@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayoutWrapper from '@/components/dashboard/DashboardLayoutWrapper';
 
+interface Agent {
+  id: string;
+  email: string;
+  name: string | null;
+  status: 'created' | 'pending';
+  createdAt: string;
+}
+
 export default function AgentsPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
@@ -14,6 +22,15 @@ export default function AgentsPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [loadingAgents, setLoadingAgents] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    agent: Agent | null;
+  }>({
+    isOpen: false,
+    agent: null,
+  });
 
   // Check user type (session check is handled by wrapper)
   useEffect(() => {
@@ -43,6 +60,68 @@ export default function AgentsPage() {
 
     checkUserType();
   }, [router]);
+
+  // Load agents list
+  useEffect(() => {
+    if (isEnterprise) {
+      fetchAgents();
+    }
+  }, [isEnterprise]);
+
+  const fetchAgents = async () => {
+    setLoadingAgents(true);
+    try {
+      const response = await fetch('/api/agents');
+      if (!response.ok) {
+        throw new Error('Failed to fetch agents');
+      }
+      const data = await response.json();
+      setAgents(data.agents || []);
+    } catch (err) {
+      console.error('Failed to load agents:', err);
+    } finally {
+      setLoadingAgents(false);
+    }
+  };
+
+  const handleDeleteClick = (agent: Agent) => {
+    setDeleteModal({
+      isOpen: true,
+      agent,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.agent) return;
+
+    try {
+      const response = await fetch('/api/agents', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: deleteModal.agent.id,
+          type: deleteModal.agent.status,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete agent');
+      }
+
+      // Remove from list
+      setAgents(agents.filter((a) => a.id !== deleteModal.agent!.id));
+      setDeleteModal({ isOpen: false, agent: null });
+    } catch (err) {
+      console.error('Delete failed:', err);
+      alert('Failed to delete agent');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, agent: null });
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -97,6 +176,9 @@ export default function AgentsPage() {
       setShowSuccess(true);
       setEmail('');
       
+      // Refresh agents list
+      await fetchAgents();
+      
       // Close modal after 3 seconds
       setTimeout(() => {
         setIsModalOpen(false);
@@ -107,6 +189,15 @@ export default function AgentsPage() {
     } finally {
       setSending(false);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   };
 
   // Don't render until mounted to avoid hydration issues
@@ -134,13 +225,90 @@ export default function AgentsPage() {
         {/* Add Agent Button */}
         <button
           onClick={openModal}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors flex items-center gap-2"
+          className="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors flex items-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           Add Agent
         </button>
+
+        {/* Agents List */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">Agents</h2>
+          </div>
+
+          {loadingAgents ? (
+            <div className="px-6 py-12 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <p className="mt-4 text-sm text-gray-600">Loading agents...</p>
+            </div>
+          ) : agents.length === 0 ? (
+            <div className="px-6 py-12 text-center">
+              <p className="text-gray-600">No agents invited yet</p>
+              <p className="text-sm text-gray-500 mt-2">Click "Add Agent" to invite your first team member</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Invited On
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {agents.map((agent) => (
+                    <tr key={agent.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {agent.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {agent.name || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {agent.status === 'created' ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Created
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Pending
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {formatDate(agent.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => handleDeleteClick(agent)}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors text-xs"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
 
         {/* Modal */}
         {isModalOpen && (
@@ -228,6 +396,35 @@ export default function AgentsPage() {
                     </div>
                   </form>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteModal.isOpen && deleteModal.agent && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Confirmer la suppression
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Cette action est irréversible. L'agent {deleteModal.agent.email} sera définitivement supprimé
+                {deleteModal.agent.status === 'pending' && ' et l\'invitation sera annulée'}.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={handleDeleteCancel}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+                >
+                  Supprimer
+                </button>
               </div>
             </div>
           </div>
