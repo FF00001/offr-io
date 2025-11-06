@@ -25,10 +25,10 @@ export default function AgentsPage() {
           return;
         }
 
-        const session = await response.json();
+        const data = await response.json();
         
         // Only enterprise accounts can access this page
-        if (session.accountType !== 'enterprise') {
+        if (!data.user || data.user.accountType !== 'enterprise') {
           router.push('/dashboard');
           return;
         }
