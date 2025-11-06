@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
-import { getCatalogsByUserId, createCatalog, updateCatalog } from '@/lib/db';
+import { getCatalogsByUserId, createCatalog, updateCatalog, deleteCatalog } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
 
@@ -141,6 +141,39 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Update catalog error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE - Delete a catalog
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { catalogId } = body;
+
+    if (!catalogId) {
+      return NextResponse.json(
+        { error: 'Missing catalog ID' },
+        { status: 400 }
+      );
+    }
+
+    deleteCatalog(catalogId);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Delete catalog error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -174,12 +174,12 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayoutWrapper>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+      <div className="space-y-6 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-gray-900 ml-4">Dashboard</h1>
           <button
-            onClick={() => router.push('/create-quote')}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-colors"
+            onClick={() => router.push('/dashboard/generate')}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-colors mr-4"
           >
             Create New Quote
           </button>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
             <div className="px-6 py-12 text-center">
               <p className="text-gray-600 mb-4">No quotes yet</p>
               <button
-                onClick={() => router.push('/create-quote')}
+                onClick={() => router.push('/dashboard/generate')}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-colors"
               >
                 Create Your First Quote

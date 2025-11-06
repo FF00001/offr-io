@@ -17,6 +17,44 @@ interface Catalog {
   uploadedAt: string;
 }
 
+interface DeleteModalProps {
+  isOpen: boolean;
+  catalogName: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+function DeleteConfirmationModal({ isOpen, catalogName, onConfirm, onCancel }: DeleteModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Confirmer la suppression
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Cette action est irréversible. Le catalogue {catalogName} sera définitivement perdu.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CatalogPage() {
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
   const [selectedCatalog, setSelectedCatalog] = useState<Catalog | null>(null);
@@ -26,6 +64,15 @@ export default function CatalogPage() {
   const [success, setSuccess] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    catalogId: string | null;
+    catalogName: string;
+  }>({
+    isOpen: false,
+    catalogId: null,
+    catalogName: '',
+  });
 
   // Fetch catalogs on mount
   useEffect(() => {
@@ -164,13 +211,56 @@ export default function CatalogPage() {
     });
   };
 
+  const handleDeleteClick = (catalogId: string, catalogName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      catalogId,
+      catalogName,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.catalogId) return;
+
+    try {
+      const response = await fetch('/api/catalogs', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ catalogId: deleteModal.catalogId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete catalog');
+      }
+
+      // Remove the catalog from the list
+      setCatalogs(catalogs.filter(c => c.id !== deleteModal.catalogId));
+      
+      // If the deleted catalog was selected, clear the selection
+      if (selectedCatalog?.id === deleteModal.catalogId) {
+        setSelectedCatalog(null);
+      }
+      
+      setDeleteModal({ isOpen: false, catalogId: null, catalogName: '' });
+      setSuccess('Catalog deleted successfully!');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete catalog');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, catalogId: null, catalogName: '' });
+  };
+
   return (
     <DashboardLayoutWrapper>
-      <div className="space-y-6">
+      <div className="space-y-6 p-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Catalog Management</h1>
-          <p className="mt-2 text-gray-600">
+        <div className="mt-4">
+          <h1 className="text-3xl font-bold text-gray-900 ml-4">Catalog Management</h1>
+          <p className="mt-2 text-gray-600 ml-4">
             Upload and manage your product catalog. CSV format with columns: description, unit, unitPrice
           </p>
         </div>
@@ -203,6 +293,14 @@ export default function CatalogPage() {
                     </option>
                   ))}
                 </select>
+                {selectedCatalog && (
+                  <button
+                    onClick={() => handleDeleteClick(selectedCatalog.id, selectedCatalog.name)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition-colors"
+                  >
+                    Delete Catalog
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -395,6 +493,13 @@ Bathroom mixer,unit,89.99`}
           </div>
         )}
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        catalogName={deleteModal.catalogName}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </DashboardLayoutWrapper>
   );
 }

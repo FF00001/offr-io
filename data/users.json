@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "5835960b-f4bf-4ce2-9d70-8b58bc9d1391",
+    "email": "aa@example.com",
+    "passwordHash": "$2b$10$EQ7LKQzMnr0SMJKTCyndUe7.HVyByEMmrbi3Y16sleOwR5yXZbodS",
+    "accountType": "agent",
+    "name": "AA",
+    "createdAt": "2025-11-06T07:20:13.904Z"
+  },
+  {
+    "id": "9b16efa3-f1c0-477d-a360-79ad9bb46b8a",
+    "email": "bb@example.com",
+    "passwordHash": "$2b$10$BfSMwx4IR/BSkTTlRtNZJevQd1n3hfkmP1QiTQxeaKKA5UESwa5yi",
+    "accountType": "enterprise",
+    "name": "AAA",
+    "createdAt": "2025-11-06T07:22:23.177Z"
+  }
+]
