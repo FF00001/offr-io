@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseQuoteDescription } from '@/lib/openai';
 import { QuoteGenerationRequest, Quote, QuoteItem } from '@/types/quote';
-import { MOCK_QUOTE_ITEMS, USE_MOCK } from '@/lib/mock-data';
+import { getMockQuoteItems, USE_MOCK } from '@/lib/mock-data';
 
 export async function POST(request: NextRequest) {
   try {
-    const body: QuoteGenerationRequest = await request.json();
-    const { description, artisanInfo, clientInfo } = body;
+    const body: QuoteGenerationRequest & { language?: 'en' | 'fr' } = await request.json();
+    const { description, artisanInfo, clientInfo, language = 'en' } = body;
 
     if (!description) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // Parse description with AI or use mock data
     const items: QuoteItem[] = USE_MOCK 
-      ? MOCK_QUOTE_ITEMS 
+      ? getMockQuoteItems(language)
       : await parseQuoteDescription(description);
 
     // Calculate totals

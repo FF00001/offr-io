@@ -4,11 +4,13 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import { useTranslation } from '@/lib/i18n';
 
 function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const invitationToken = searchParams.get('token');
+  const t = useTranslation();
 
   const [accountType, setAccountType] = useState<'agent' | 'enterprise'>('agent');
   const [name, setName] = useState('');
@@ -22,12 +24,12 @@ function SignUpForm() {
     setError('');
 
     if (!name || !email || !password) {
-      setError('All fields are required');
+      setError(t.auth.allFieldsRequired);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t.auth.passwordTooShort);
       return;
     }
 
@@ -71,10 +73,10 @@ function SignUpForm() {
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Create your account
+              {t.auth.signupTitle}
             </h2>
             <p className="text-gray-600 mb-8">
-              Get started with Offr.io today
+              {t.auth.signupSubtitle}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -82,10 +84,10 @@ function SignUpForm() {
               {!invitationToken && (
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-900">
-                    Account type
+                    {t.auth.accountType}
                   </label>
                   <p className="text-sm text-gray-500">
-                    Choose the type of account you want to create
+                    {t.auth.accountTypeHelp}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <button
@@ -97,7 +99,7 @@ function SignUpForm() {
                           : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                       }`}
                     >
-                      Agent
+                      {t.auth.agent}
                     </button>
                     <button
                       type="button"
@@ -108,7 +110,7 @@ function SignUpForm() {
                           : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                       }`}
                     >
-                      Enterprise
+                      {t.auth.enterprise}
                     </button>
                   </div>
                 </div>
@@ -117,10 +119,10 @@ function SignUpForm() {
               {/* Name */}
               <div className="space-y-2">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-900">
-                  {accountType === 'agent' ? 'Agent name' : 'Enterprise name'}
+                  {accountType === 'agent' ? t.auth.agentName : t.auth.enterpriseName}
                 </label>
                 <p className="text-sm text-gray-500">
-                  {accountType === 'agent' ? 'Your full name' : 'Your company name'}
+                  {accountType === 'agent' ? t.auth.fullName : t.auth.companyName}
                 </p>
                 <input
                   type="text"
@@ -136,10 +138,10 @@ function SignUpForm() {
               {/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                  Email address
+                  {t.auth.emailAddress}
                 </label>
                 <p className="text-sm text-gray-500">
-                  We'll use this for your login
+                  {t.auth.emailHelp}
                 </p>
                 <input
                   type="email"
@@ -155,17 +157,17 @@ function SignUpForm() {
               {/* Password */}
               <div className="space-y-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-900">
-                  Password
+                  {t.auth.password}
                 </label>
                 <p className="text-sm text-gray-500">
-                  At least 6 characters
+                  {t.auth.passwordHelp}
                 </p>
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={t.auth.passwordPlaceholder}
                   className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                   required
                 />
@@ -184,14 +186,14 @@ function SignUpForm() {
                 disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating account...' : 'Sign up'}
+                {loading ? t.auth.creatingAccount : t.auth.signupButton}
               </button>
 
               {/* Login link */}
               <p className="text-center text-sm text-gray-600">
-                Already have an account?{' '}
+                {t.auth.alreadyHaveAccount}{' '}
                 <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Log in
+                  {t.auth.loginButton}
                 </Link>
               </p>
             </form>
@@ -202,13 +204,18 @@ function SignUpForm() {
   );
 }
 
+function LoadingFallback() {
+  const t = useTranslation();
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="text-gray-600">{t.common.loading}</div>
+    </div>
+  );
+}
+
 export default function SignUpPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-gray-600">Loading...</div>
-      </div>
-    }>
+    <Suspense fallback={<LoadingFallback />}>
       <SignUpForm />
     </Suspense>
   );

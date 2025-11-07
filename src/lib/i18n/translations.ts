@@ -216,12 +216,15 @@ export const translations = {
     feedback: {
       title: 'Share your feedback',
       subtitle: 'Help us improve Offr.io',
+      label: 'Your feedback',
+      description: 'Tell us what you think, what features you\'d like to see, or any issues you\'ve encountered',
       placeholder: 'Tell us what you think...',
       submit: 'Submit feedback',
       submitting: 'Submitting...',
       thankYou: 'Thank you for your feedback!',
       thankYouMessage: 'Your input is valuable and helps us make the solution better.',
       submitAnother: 'Submit another feedback',
+      error: 'Failed to send feedback. Please try again.',
     },
 
     // Common
@@ -456,12 +459,15 @@ export const translations = {
     feedback: {
       title: 'Partagez votre avis',
       subtitle: 'Aidez-nous à améliorer Offr.io',
+      label: 'Votre retour',
+      description: 'Dites-nous ce que vous en pensez, quelles fonctionnalités vous aimeriez voir, ou les problèmes que vous avez rencontrés',
       placeholder: 'Dites-nous ce que vous en pensez...',
       submit: 'Envoyer',
       submitting: 'Envoi...',
       thankYou: 'Merci pour votre retour !',
       thankYouMessage: 'Votre avis est précieux et nous aide à améliorer la solution.',
       submitAnother: 'Envoyer un autre retour',
+      error: 'Échec de l\'envoi du retour. Veuillez réessayer.',
     },
 
     // Common

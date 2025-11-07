@@ -2,8 +2,10 @@
 
 import Header from '@/components/Header';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n';
 
 export default function Home() {
+  const t = useTranslation();
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Header />
@@ -14,18 +16,18 @@ export default function Home() {
           {/* Decorative accent */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-8">
             <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-            Smart quoting platform
+            {t.landing.badge}
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-            Create professional quotes{' '}
+            {t.landing.title}{' '}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              in minutes
+              {t.landing.titleHighlight}
             </span>
           </h1>
           
           <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-            Our smart quoting platform helps craftsmen and contractors save time and impress clients.
+            {t.landing.subtitle}
           </p>
 
           {/* CTA Button */}
@@ -33,7 +35,7 @@ export default function Home() {
             href="/quote"
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-lg px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
           >
-            Try it now
+            {t.landing.cta}
             <svg 
               className="w-5 h-5" 
               fill="none" 
@@ -57,8 +59,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Lightning fast</h3>
-              <p className="text-gray-600 text-sm">Generate quotes in seconds, not hours</p>
+              <h3 className="font-semibold text-gray-900 mb-2">{t.landing.feature1Title}</h3>
+              <p className="text-gray-600 text-sm">{t.landing.feature1Desc}</p>
             </div>
 
             <div className="text-center">
@@ -67,8 +69,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Professional</h3>
-              <p className="text-gray-600 text-sm">Impress clients with polished PDFs</p>
+              <h3 className="font-semibold text-gray-900 mb-2">{t.landing.feature2Title}</h3>
+              <p className="text-gray-600 text-sm">{t.landing.feature2Desc}</p>
             </div>
 
             <div className="text-center">
@@ -77,8 +79,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Save money</h3>
-              <p className="text-gray-600 text-sm">Free to try, affordable to scale</p>
+              <h3 className="font-semibold text-gray-900 mb-2">{t.landing.feature3Title}</h3>
+              <p className="text-gray-600 text-sm">{t.landing.feature3Desc}</p>
             </div>
           </div>
         </div>

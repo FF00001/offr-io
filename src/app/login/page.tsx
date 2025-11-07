@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import { useTranslation } from '@/lib/i18n';
 
 export default function LoginPage() {
   const router = useRouter();
+  const t = useTranslation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +20,7 @@ export default function LoginPage() {
     setError('');
 
     if (!email || !password) {
-      setError('All fields are required');
+      setError(t.auth.allFieldsRequired);
       return;
     }
 
@@ -59,17 +61,17 @@ export default function LoginPage() {
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome back
+              {t.auth.loginTitle}
             </h2>
             <p className="text-gray-600 mb-8">
-              Log in to your Offr.io account
+              {t.auth.loginSubtitle}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                  Email address
+                  {t.auth.emailAddress}
                 </label>
                 <input
                   type="email"
@@ -85,14 +87,14 @@ export default function LoginPage() {
               {/* Password */}
               <div className="space-y-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-900">
-                  Password
+                  {t.auth.password}
                 </label>
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={t.auth.passwordPlaceholder}
                   className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                   required
                 />
@@ -111,14 +113,14 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {loading ? 'Logging in...' : 'Log in'}
+                {loading ? t.auth.loggingIn : t.auth.loginButton}
               </button>
 
               {/* Sign up link */}
               <p className="text-center text-sm text-gray-600">
-                Don't have an account?{' '}
+                {t.auth.dontHaveAccount}{' '}
                 <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Sign up
+                  {t.auth.signupButton}
                 </Link>
               </p>
             </form>

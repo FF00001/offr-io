@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Header from '@/components/Header';
+import { useTranslation } from '@/lib/i18n';
 
 export default function FeedbackPage() {
+  const t = useTranslation();
   const [feedback, setFeedback] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -27,7 +29,7 @@ export default function FeedbackPage() {
         setFeedback('');
       } catch (error) {
         console.error('Error sending feedback:', error);
-        alert('Failed to send feedback. Please try again.');
+        alert(t.feedback.error);
       }
     }
   };
@@ -40,10 +42,10 @@ export default function FeedbackPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Share your feedback
+              {t.feedback.title}
             </h1>
             <p className="text-gray-600 mb-8">
-              We'd love to hear your thoughts on how we can improve Offr.io
+              {t.feedback.subtitle}
             </p>
 
             {!submitted ? (
@@ -51,16 +53,16 @@ export default function FeedbackPage() {
                 {/* Feedback textarea */}
                 <div className="space-y-2">
                   <label htmlFor="feedback" className="block text-sm font-medium text-gray-900">
-                    Your feedback
+                    {t.feedback.label}
                   </label>
                   <p className="text-sm text-gray-500">
-                    Tell us what you think, what features you'd like to see, or any issues you've encountered
+                    {t.feedback.description}
                   </p>
                   <textarea
                     id="feedback"
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Share your thoughts..."
+                    placeholder={t.feedback.placeholder}
                     className="w-full h-40 px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 resize-none"
                     required
                   />
@@ -71,7 +73,7 @@ export default function FeedbackPage() {
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors"
                 >
-                  Send
+                  {t.feedback.submit}
                 </button>
               </form>
             ) : (
@@ -83,16 +85,16 @@ export default function FeedbackPage() {
                   </svg>
                 </div>
                 <p className="text-lg text-gray-900 mb-2 font-medium">
-                  Thank you for your feedback!
+                  {t.feedback.thankYou}
                 </p>
                 <p className="text-gray-600">
-                  Your input is valuable and helps us make the solution better.
+                  {t.feedback.thankYouMessage}
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
                   className="mt-6 text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Submit another feedback
+                  {t.feedback.submitAnother}
                 </button>
               </div>
             )}
