@@ -3,9 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 export default function Header() {
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,11 +57,74 @@ export default function Header() {
           </h1>
         </Link>
 
-        {/* Hamburger Menu Button */}
+        {/* Desktop Navigation - Hidden on mobile */}
+        <div className="hidden md:flex items-center gap-4">
+          {!loading && (
+            <>
+              {user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t.header.dashboard}
+                  </Link>
+                  <Link
+                    href="/feedback"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t.header.feedback}
+                  </Link>
+                  <button
+                    onClick={toggleLanguage}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-1 border border-gray-300 rounded-md"
+                  >
+                    {language === 'en' ? 'FR' : 'EN'}
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t.header.logout}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t.header.login}
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+                  >
+                    {t.header.signup}
+                  </Link>
+                  <Link
+                    href="/feedback"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t.header.feedback}
+                  </Link>
+                  <button
+                    onClick={toggleLanguage}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-1 border border-gray-300 rounded-md"
+                  >
+                    {language === 'en' ? 'FR' : 'EN'}
+                  </button>
+                </>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Hamburger Menu Button - Visible on mobile only */}
         {!loading && (
           <button
             onClick={toggleMenu}
-            className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             aria-label="Toggle menu"
           >
             {menuOpen ? (
@@ -73,17 +140,17 @@ export default function Header() {
         )}
       </div>
 
-      {/* Dropdown Menu */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && !loading && (
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 md:hidden"
             onClick={closeMenu}
           />
 
           {/* Menu Panel */}
-          <div className="absolute right-0 top-16 z-50 w-56 bg-white border border-gray-200 rounded-lg shadow-lg mr-4">
+          <div className="absolute right-0 top-16 z-50 w-56 bg-white border border-gray-200 rounded-lg shadow-lg mr-4 md:hidden">
             <div className="py-2">
               {user ? (
                 <>
@@ -92,21 +159,30 @@ export default function Header() {
                     onClick={closeMenu}
                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Dashboard
+                    {t.header.dashboard}
                   </Link>
                   <Link
                     href="/feedback"
                     onClick={closeMenu}
                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Share your feedback
+                    {t.header.feedback}
                   </Link>
+                  <button
+                    onClick={() => {
+                      toggleLanguage();
+                      closeMenu();
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    {language === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}
+                  </button>
                   <div className="border-t border-gray-200 my-2"></div>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-gray-100 transition-colors"
                   >
-                    Log out
+                    {t.header.logout}
                   </button>
                 </>
               ) : (
@@ -116,23 +192,31 @@ export default function Header() {
                     onClick={closeMenu}
                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Log in
+                    {t.header.login}
                   </Link>
                   <Link
                     href="/signup"
                     onClick={closeMenu}
                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Sign up
+                    {t.header.signup}
                   </Link>
-                  <div className="border-t border-gray-200 my-2"></div>
                   <Link
                     href="/feedback"
                     onClick={closeMenu}
                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Share your feedback
+                    {t.header.feedback}
                   </Link>
+                  <button
+                    onClick={() => {
+                      toggleLanguage();
+                      closeMenu();
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    {language === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}
+                  </button>
                 </>
               )}
             </div>

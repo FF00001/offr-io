@@ -51,3 +51,12 @@ export interface AgentInvitation {
   used: boolean;
   createdAt: string;
 }
+
+export interface Template {
+  id: string;
+  userId: string;
+  name: string;
+  content: any; // Template content (could be JSON)
+  createdAt: string;
+  updatedAt: string;
+}

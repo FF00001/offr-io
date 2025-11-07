@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { User, SavedQuote, Catalog, AgentInvitation } from '@/types/user';
+import { User, SavedQuote, Catalog, AgentInvitation, Template } from '@/types/user';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 
@@ -14,6 +14,7 @@ const DB_FILES = {
   quotes: path.join(DATA_DIR, 'quotes.json'),
   catalogs: path.join(DATA_DIR, 'catalogs.json'),
   invitations: path.join(DATA_DIR, 'invitations.json'),
+  templates: path.join(DATA_DIR, 'templates.json'),
 };
 
 // Initialize files if they don't exist
@@ -157,4 +158,36 @@ export function deleteInvitation(id: string): void {
   const invitations = getInvitations();
   const filtered = invitations.filter(i => i.id !== id);
   writeData(DB_FILES.invitations, filtered);
+}
+
+// Templates
+export function getTemplatesByUserId(userId: string): Template[] {
+  const templates = readData<Template>(DB_FILES.templates);
+  return templates.filter(t => t.userId === userId);
+}
+
+export function getTemplateById(id: string): Template | undefined {
+  const templates = readData<Template>(DB_FILES.templates);
+  return templates.find(t => t.id === id);
+}
+
+export function createTemplate(template: Template): void {
+  const templates = readData<Template>(DB_FILES.templates);
+  templates.push(template);
+  writeData(DB_FILES.templates, templates);
+}
+
+export function updateTemplate(id: string, updates: Partial<Template>): void {
+  const templates = readData<Template>(DB_FILES.templates);
+  const index = templates.findIndex(t => t.id === id);
+  if (index !== -1) {
+    templates[index] = { ...templates[index], ...updates, updatedAt: new Date().toISOString() };
+    writeData(DB_FILES.templates, templates);
+  }
+}
+
+export function deleteTemplate(id: string): void {
+  const templates = readData<Template>(DB_FILES.templates);
+  const filtered = templates.filter(t => t.id !== id);
+  writeData(DB_FILES.templates, filtered);
 }
