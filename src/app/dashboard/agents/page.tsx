@@ -241,7 +241,7 @@ export default function AgentsPage() {
         {/* Agents List */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">{t.agents.agentsListTitle}</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{t.agents.agentsTitle}</h2>
           </div>
 
           {loadingAgents ? (
@@ -251,8 +251,8 @@ export default function AgentsPage() {
             </div>
           ) : agents.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <p className="text-gray-600">{t.agents.noAgentsYet}</p>
-              <p className="text-sm text-gray-500 mt-2">{t.agents.clickAddAgent}</p>
+              <p className="text-gray-600">{t.agents.noAgents}</p>
+              <p className="text-sm text-gray-500 mt-2">{t.agents.inviteFirst}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -322,7 +322,7 @@ export default function AgentsPage() {
               {/* Modal Header */}
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {t.agents.inviteAgentTitle}
+                  {t.agents.inviteAgent}
                 </h2>
               </div>
 
@@ -340,7 +340,7 @@ export default function AgentsPage() {
                       {t.agents.invitationSent}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {t.agents.invitationSentMessage}
+                      {t.agents.invitationMessage}
                     </p>
                   </div>
                 ) : (
@@ -356,7 +356,7 @@ export default function AgentsPage() {
                         id="modal-email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t.agents.emailPlaceholder}
+                        placeholder={t.agents.agentEmailPlaceholder}
                         className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                         required
                         disabled={sending}
