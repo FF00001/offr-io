@@ -3,6 +3,8 @@
 import { useState, ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 export interface User {
   accountType: 'agent' | 'enterprise';
@@ -26,6 +28,8 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -38,7 +42,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
 
   const navigationItems: NavItem[] = [
     {
-      name: 'Quotes History',
+      name: t.dashboard.quotesHistory,
       href: '/dashboard',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +51,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       ),
     },
     {
-      name: 'Generate Quote',
+      name: t.dashboard.generateQuote,
       href: '/dashboard/generate',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +60,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       ),
     },
     {
-      name: 'Catalog',
+      name: t.dashboard.catalog,
       href: '/dashboard/catalog',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +69,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       ),
     },
     {
-      name: 'Templates',
+      name: t.dashboard.templates,
       href: '/dashboard/templates',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +78,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       ),
     },
     {
-      name: 'Add Agents',
+      name: t.dashboard.addAgents,
       href: '/dashboard/agents',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +105,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-xl font-bold text-gray-900">{t.dashboard.title}</h1>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
@@ -154,7 +158,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
                   {item.name}
                   {item.enterpriseOnly && (
                     <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                      Enterprise
+                      {t.dashboard.enterprise}
                     </span>
                   )}
                 </Link>
@@ -177,13 +181,22 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
                 </div>
               </div>
               <button
+                onClick={toggleLanguage}
+                className="w-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors flex items-center"
+              >
+                <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                {language === 'en' ? 'FR' : 'EN'}
+              </button>
+              <button
                 onClick={handleLogout}
                 className="w-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors flex items-center"
               >
                 <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Log out
+                {t.header.logout}
               </button>
             </div>
           )}
@@ -224,7 +237,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
                     {item.name}
                     {item.enterpriseOnly && (
                       <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                        Enterprise
+                        {t.dashboard.enterprise}
                       </span>
                     )}
                   </Link>
@@ -247,13 +260,22 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
                   </div>
                 </div>
                 <button
+                  onClick={toggleLanguage}
+                  className="w-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors flex items-center"
+                >
+                  <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                  </svg>
+                  {language === 'en' ? 'FR' : 'EN'}
+                </button>
+                <button
                   onClick={handleLogout}
                   className="w-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors flex items-center"
                 >
                   <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Log out
+                  {t.header.logout}
                 </button>
               </div>
             )}

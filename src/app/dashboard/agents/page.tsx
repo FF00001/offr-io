@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayoutWrapper from '@/components/dashboard/DashboardLayoutWrapper';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 interface Agent {
   id: string;
@@ -13,6 +15,8 @@ interface Agent {
 }
 
 export default function AgentsPage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -193,7 +197,8 @@ export default function AgentsPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = language === 'fr' ? 'fr-FR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -215,10 +220,10 @@ export default function AgentsPage() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Team Management
+            {t.agents.title}
           </h1>
           <p className="text-gray-600">
-            Invite agents to join your enterprise team
+            {t.agents.subtitle}
           </p>
         </div>
 
@@ -230,24 +235,24 @@ export default function AgentsPage() {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          Add Agent
+          {t.agents.addAgent}
         </button>
 
         {/* Agents List */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Agents</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{t.agents.agentsListTitle}</h2>
           </div>
 
           {loadingAgents ? (
             <div className="px-6 py-12 text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-sm text-gray-600">Loading agents...</p>
+              <p className="mt-4 text-sm text-gray-600">{t.agents.loadingAgents}</p>
             </div>
           ) : agents.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <p className="text-gray-600">No agents invited yet</p>
-              <p className="text-sm text-gray-500 mt-2">Click "Add Agent" to invite your first team member</p>
+              <p className="text-gray-600">{t.agents.noAgentsYet}</p>
+              <p className="text-sm text-gray-500 mt-2">{t.agents.clickAddAgent}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -255,19 +260,19 @@ export default function AgentsPage() {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
+                      {t.agents.email}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
+                      {t.agents.name}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      {t.agents.status}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Invited On
+                      {t.agents.invitedOn}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      {t.agents.actions}
                     </th>
                   </tr>
                 </thead>
@@ -283,11 +288,11 @@ export default function AgentsPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {agent.status === 'created' ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Created
+                            {t.agents.statusCreated}
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Pending
+                            {t.agents.statusPending}
                           </span>
                         )}
                       </td>
@@ -299,7 +304,7 @@ export default function AgentsPage() {
                           onClick={() => handleDeleteClick(agent)}
                           className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors text-xs"
                         >
-                          Delete
+                          {t.agents.delete}
                         </button>
                       </td>
                     </tr>
@@ -317,7 +322,7 @@ export default function AgentsPage() {
               {/* Modal Header */}
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  Invite Agent
+                  {t.agents.inviteAgentTitle}
                 </h2>
               </div>
 
@@ -332,10 +337,10 @@ export default function AgentsPage() {
                       </svg>
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Invitation Sent!
+                      {t.agents.invitationSent}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      The agent will receive an email with instructions to join your team.
+                      {t.agents.invitationSentMessage}
                     </p>
                   </div>
                 ) : (
@@ -344,14 +349,14 @@ export default function AgentsPage() {
                     {/* Email Input */}
                     <div>
                       <label htmlFor="modal-email" className="block text-sm font-medium text-gray-900 mb-2">
-                        Agent Email
+                        {t.agents.agentEmail}
                       </label>
                       <input
                         type="email"
                         id="modal-email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="agent@example.com"
+                        placeholder={t.agents.emailPlaceholder}
                         className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                         required
                         disabled={sending}
@@ -377,7 +382,7 @@ export default function AgentsPage() {
                         disabled={sending}
                         className="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-300 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Cancel
+                        {t.agents.cancel}
                       </button>
                       <button
                         type="submit"
@@ -387,10 +392,10 @@ export default function AgentsPage() {
                         {sending ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Sending...
+                            {t.agents.sending}
                           </>
                         ) : (
-                          'Invite'
+                          t.agents.invite
                         )}
                       </button>
                     </div>
@@ -406,24 +411,24 @@ export default function AgentsPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Confirmer la suppression
+                {t.agents.deleteAgentTitle}
               </h3>
               <p className="text-gray-600 mb-6">
-                Cette action est irréversible. L'agent {deleteModal.agent.email} sera définitivement supprimé
-                {deleteModal.agent.status === 'pending' && ' et l\'invitation sera annulée'}.
+                {t.agents.deleteAgentMessage.replace('{email}', deleteModal.agent.email)}
+                {deleteModal.agent.status === 'pending' && ` ${t.agents.deleteAgentPendingMessage}`}
               </p>
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={handleDeleteCancel}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                 >
-                  Annuler
+                  {t.agents.cancel}
                 </button>
                 <button
                   onClick={handleDeleteConfirm}
                   className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
                 >
-                  Supprimer
+                  {t.agents.delete}
                 </button>
               </div>
             </div>

@@ -3,8 +3,12 @@
 import { useEffect, useState } from 'react';
 import DashboardLayoutWrapper from '@/components/dashboard/DashboardLayoutWrapper';
 import { Quote } from '@/types/quote';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 export default function GenerateQuotePage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
   const [generating, setGenerating] = useState(false);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState('');
@@ -156,9 +160,9 @@ export default function GenerateQuotePage() {
     <DashboardLayoutWrapper>
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8 mt-4">
-          <h1 className="text-3xl font-bold text-gray-900">Generate Quote</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t.generateQuote.title}</h1>
           <p className="mt-2 text-gray-600">
-            Create a professional quote for your client
+            {t.generateQuote.subtitle}
           </p>
         </div>
 
@@ -168,7 +172,7 @@ export default function GenerateQuotePage() {
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span className="font-medium">{successMessage}</span>
+            <span className="font-medium">{t.generateQuote.successMessage}</span>
           </div>
         )}
 
@@ -184,16 +188,16 @@ export default function GenerateQuotePage() {
             {/* Description */}
             <div className="space-y-2">
               <label htmlFor="description" className="block text-sm font-medium text-gray-900">
-                Intervention description *
+                {t.quote.descriptionLabel} {t.generateQuote.required}
               </label>
               <p className="text-sm text-gray-500">
-                Describe the work to be done
+                {t.quote.descriptionHelp}
               </p>
               <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g., Replace a 200L water heater and install a new mixer in the bathroom"
+                placeholder={t.quote.descriptionPlaceholder}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                 rows={4}
                 required
@@ -203,20 +207,20 @@ export default function GenerateQuotePage() {
             {/* Your Information */}
             <div className="pt-6 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                Your information
+                {t.quote.yourInfoTitle}
               </h3>
               
               <div className="space-y-6">
                 <div className="space-y-2">
                   <label htmlFor="artisanName" className="block text-sm font-medium text-gray-900">
-                    Full name *
+                    {t.quote.fullName} {t.generateQuote.required}
                   </label>
                   <input
                     type="text"
                     id="artisanName"
                     value={artisanName}
                     onChange={(e) => setArtisanName(e.target.value)}
-                    placeholder="John Doe"
+                    placeholder={t.quote.fullNamePlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     required
                   />
@@ -224,28 +228,28 @@ export default function GenerateQuotePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="artisanCompany" className="block text-sm font-medium text-gray-900">
-                    Company name
+                    {t.quote.company}
                   </label>
                   <input
                     type="text"
                     id="artisanCompany"
                     value={artisanCompany}
                     onChange={(e) => setArtisanCompany(e.target.value)}
-                    placeholder="ABC Plumbing"
+                    placeholder={t.quote.companyPlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="artisanAddress" className="block text-sm font-medium text-gray-900">
-                    Address
+                    {t.quote.address}
                   </label>
                   <input
                     type="text"
                     id="artisanAddress"
                     value={artisanAddress}
                     onChange={(e) => setArtisanAddress(e.target.value)}
-                    placeholder="123 Main St, Paris 75001"
+                    placeholder={t.quote.addressPlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                   />
                 </div>
@@ -253,28 +257,28 @@ export default function GenerateQuotePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="artisanPhone" className="block text-sm font-medium text-gray-900">
-                      Phone
+                      {t.quote.phone}
                     </label>
                     <input
                       type="tel"
                       id="artisanPhone"
                       value={artisanPhone}
                       onChange={(e) => setArtisanPhone(e.target.value)}
-                      placeholder="+33 6 12 34 56 78"
+                      placeholder={t.quote.phonePlaceholder}
                       className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="artisanEmail" className="block text-sm font-medium text-gray-900">
-                      Email *
+                      {t.quote.email} {t.generateQuote.required}
                     </label>
                     <input
                       type="email"
                       id="artisanEmail"
                       value={artisanEmail}
                       onChange={(e) => setArtisanEmail(e.target.value)}
-                      placeholder="john@example.com"
+                      placeholder={t.quote.emailPlaceholder}
                       className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                       required
                     />
@@ -283,14 +287,14 @@ export default function GenerateQuotePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="artisanSiret" className="block text-sm font-medium text-gray-900">
-                    SIRET <span className="text-gray-500 font-normal">(optional)</span>
+                    {t.quote.siret} <span className="text-gray-500 font-normal">{t.quote.siretOptional}</span>
                   </label>
                   <input
                     type="text"
                     id="artisanSiret"
                     value={artisanSiret}
                     onChange={(e) => setArtisanSiret(e.target.value)}
-                    placeholder="123 456 789 00012"
+                    placeholder={t.quote.siretPlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                   />
                 </div>
@@ -300,20 +304,20 @@ export default function GenerateQuotePage() {
             {/* Client Information */}
             <div className="pt-6 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                Client information
+                {t.quote.clientInfoTitle}
               </h3>
               
               <div className="space-y-6">
                 <div className="space-y-2">
                   <label htmlFor="clientName" className="block text-sm font-medium text-gray-900">
-                    Client name *
+                    {t.quote.clientName} {t.generateQuote.required}
                   </label>
                   <input
                     type="text"
                     id="clientName"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
-                    placeholder="Jane Smith"
+                    placeholder={t.quote.clientNamePlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     required
                   />
@@ -321,14 +325,14 @@ export default function GenerateQuotePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="clientAddress" className="block text-sm font-medium text-gray-900">
-                    Client address *
+                    {t.quote.clientAddress} {t.generateQuote.required}
                   </label>
                   <input
                     type="text"
                     id="clientAddress"
                     value={clientAddress}
                     onChange={(e) => setClientAddress(e.target.value)}
-                    placeholder="456 Avenue Victor Hugo, Paris 75016"
+                    placeholder={t.quote.clientAddressPlaceholder}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     required
                   />
@@ -337,28 +341,28 @@ export default function GenerateQuotePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="clientPhone" className="block text-sm font-medium text-gray-900">
-                      Phone <span className="text-gray-500 font-normal">(optional)</span>
+                      {t.quote.phone} <span className="text-gray-500 font-normal">{t.common.optional}</span>
                     </label>
                     <input
                       type="tel"
                       id="clientPhone"
                       value={clientPhone}
                       onChange={(e) => setClientPhone(e.target.value)}
-                      placeholder="+33 6 98 76 54 32"
+                      placeholder={t.quote.phonePlaceholder}
                       className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="clientEmail" className="block text-sm font-medium text-gray-900">
-                      Email <span className="text-gray-500 font-normal">(optional)</span>
+                      {t.quote.email} <span className="text-gray-500 font-normal">{t.common.optional}</span>
                     </label>
                     <input
                       type="email"
                       id="clientEmail"
                       value={clientEmail}
                       onChange={(e) => setClientEmail(e.target.value)}
-                      placeholder="jane@example.com"
+                      placeholder={t.quote.emailPlaceholder}
                       className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
                     />
                   </div>
@@ -375,7 +379,7 @@ export default function GenerateQuotePage() {
                   disabled={generating}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md shadow-sm transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                  {generating ? 'Generating...' : 'Generate quote'}
+                  {generating ? t.quote.generating : t.quote.generateButton}
                 </button>
 
                 {quote && (
@@ -385,7 +389,7 @@ export default function GenerateQuotePage() {
                     disabled={generating}
                     className="flex-1 bg-white hover:bg-gray-50 text-gray-900 font-medium py-3 px-6 rounded-md shadow-sm border border-gray-300 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    {generating ? 'Downloading...' : 'Download PDF'}
+                    {generating ? t.quote.downloading : t.quote.downloadButton}
                   </button>
                 )}
               </div>
@@ -396,33 +400,33 @@ export default function GenerateQuotePage() {
         {/* Preview */}
         {quote && (
           <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Quote preview</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-6">{t.quote.previewTitle}</h3>
             
             <div className="space-y-6">
               <div className="pb-4 border-b border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-1">QUOTE</h4>
-                <p className="text-sm text-gray-600">No. {quote.quoteNumber}</p>
-                <p className="text-sm text-gray-600">Date: {quote.date}</p>
-                <p className="text-sm text-gray-600">Valid until: {quote.validUntil}</p>
+                <h4 className="text-lg font-semibold text-gray-900 mb-1">{t.quote.quoteLabel}</h4>
+                <p className="text-sm text-gray-600">{t.quote.quoteNo} {quote.quoteNumber}</p>
+                <p className="text-sm text-gray-600">{t.quote.date}: {quote.date}</p>
+                <p className="text-sm text-gray-600">{t.quote.validUntil}: {quote.validUntil}</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 border-b border-gray-200">
                 <div>
-                  <h5 className="text-sm font-semibold text-gray-900 mb-2">CONTRACTOR</h5>
+                  <h5 className="text-sm font-semibold text-gray-900 mb-2">{t.quote.contractor}</h5>
                   <p className="text-sm text-gray-700">{quote.artisan.company}</p>
                   <p className="text-sm text-gray-600">{quote.artisan.address}</p>
                   <p className="text-sm text-gray-600">{quote.artisan.phone}</p>
                   <p className="text-sm text-gray-600">{quote.artisan.email}</p>
                 </div>
                 <div>
-                  <h5 className="text-sm font-semibold text-gray-900 mb-2">CLIENT</h5>
+                  <h5 className="text-sm font-semibold text-gray-900 mb-2">{t.quote.client}</h5>
                   <p className="text-sm text-gray-700">{quote.client.name}</p>
                   <p className="text-sm text-gray-600">{quote.client.address}</p>
                 </div>
               </div>
 
               <div className="pb-6 border-b border-gray-200">
-                <h5 className="text-sm font-semibold text-gray-900 mb-4">SERVICES</h5>
+                <h5 className="text-sm font-semibold text-gray-900 mb-4">{t.quote.services}</h5>
                 <div className="space-y-3">
                   {quote.items.map((item, index) => (
                     <div key={index} className="flex justify-between text-sm">
@@ -440,15 +444,15 @@ export default function GenerateQuotePage() {
 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal (excl. VAT):</span>
+                  <span className="text-gray-600">{t.quote.subtotal}:</span>
                   <span className="text-gray-900">{quote.subtotal.toFixed(2)}€</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">VAT ({quote.tvaRate}%):</span>
+                  <span className="text-gray-600">{t.quote.vat} ({quote.tvaRate}%):</span>
                   <span className="text-gray-900">{quote.tva.toFixed(2)}€</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
-                  <span className="text-gray-900">Total (incl. VAT):</span>
+                  <span className="text-gray-900">{t.quote.total}:</span>
                   <span className="text-gray-900">{quote.total.toFixed(2)}€</span>
                 </div>
               </div>

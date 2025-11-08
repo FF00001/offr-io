@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayoutWrapper from '@/components/dashboard/DashboardLayoutWrapper';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 interface Quote {
   id: string;
@@ -21,29 +23,31 @@ interface DeleteModalProps {
 }
 
 function DeleteConfirmationModal({ isOpen, quoteNumber, onConfirm, onCancel }: DeleteModalProps) {
+  const t = useTranslation();
+  
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Confirmer la suppression
+          {t.dashboard.confirmDelete}
         </h3>
         <p className="text-gray-600 mb-6">
-          Cette action est irréversible. Le devis {quoteNumber} sera définitivement perdu.
+          {t.dashboard.deleteMessage.replace('{quoteNumber}', quoteNumber)}
         </p>
         <div className="flex gap-3 justify-end">
           <button
             onClick={onCancel}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
           >
-            Annuler
+            {t.dashboard.cancel}
           </button>
           <button
             onClick={onConfirm}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
           >
-            Supprimer
+            {t.dashboard.confirmButton}
           </button>
         </div>
       </div>
@@ -52,6 +56,8 @@ function DeleteConfirmationModal({ isOpen, quoteNumber, onConfirm, onCancel }: D
 }
 
 export default function DashboardPage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
   const router = useRouter();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
@@ -158,7 +164,8 @@ export default function DashboardPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
+    const locale = language === 'fr' ? 'fr-FR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -166,7 +173,8 @@ export default function DashboardPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-FR', {
+    const locale = language === 'fr' ? 'fr-FR' : 'en-US';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: 'EUR',
     }).format(amount);
@@ -175,13 +183,12 @@ export default function DashboardPage() {
   return (
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-gray-900 ml-4">Dashboard</h1>
+        <div className="flex items-center justify-end mb-4">
           <button
             onClick={() => router.push('/dashboard/generate')}
             className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-colors mr-4"
           >
-            Create New Quote
+            {t.dashboard.createNewQuote}
           </button>
         </div>
 
@@ -193,17 +200,17 @@ export default function DashboardPage() {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Quotes History</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{t.dashboard.quotesHistory}</h2>
           </div>
 
           {quotes.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <p className="text-gray-600 mb-4">No quotes yet</p>
+              <p className="text-gray-600 mb-4">{t.dashboard.noQuotesYet}</p>
               <button
                 onClick={() => router.push('/dashboard/generate')}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-colors"
               >
-                Create Your First Quote
+                {t.dashboard.createFirstQuote}
               </button>
             </div>
           ) : (
@@ -212,19 +219,19 @@ export default function DashboardPage() {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Quote Number
+                      {t.dashboard.quoteNumber}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Client Name
+                      {t.dashboard.clientName}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      {t.dashboard.date}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total
+                      {t.dashboard.total}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      {t.dashboard.actions}
                     </th>
                   </tr>
                 </thead>
@@ -250,13 +257,13 @@ export default function DashboardPage() {
                             disabled={downloadingId === quote.id}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md transition-colors text-xs disabled:bg-gray-400 disabled:cursor-not-allowed"
                           >
-                            {downloadingId === quote.id ? 'Downloading...' : 'Download PDF'}
+                            {downloadingId === quote.id ? t.quote.downloading : t.dashboard.downloadPdf}
                           </button>
                           <button
                             onClick={() => handleDeleteClick(quote.id, quote.quoteNumber)}
                             className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors text-xs"
                           >
-                            Delete
+                            {t.dashboard.delete}
                           </button>
                         </div>
                       </td>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, DragEvent } from 'react';
 import DashboardLayoutWrapper from '@/components/dashboard/DashboardLayoutWrapper';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/lib/i18n';
 
 interface CatalogItem {
   description: string;
@@ -25,29 +27,31 @@ interface DeleteModalProps {
 }
 
 function DeleteConfirmationModal({ isOpen, catalogName, onConfirm, onCancel }: DeleteModalProps) {
+  const t = useTranslation();
+  
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Confirmer la suppression
+          {t.catalog.confirmDelete}
         </h3>
         <p className="text-gray-600 mb-6">
-          Cette action est irréversible. Le catalogue {catalogName} sera définitivement perdu.
+          {t.catalog.deleteCatalogMessage.replace('{catalogName}', catalogName)}
         </p>
         <div className="flex gap-3 justify-end">
           <button
             onClick={onCancel}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
           >
-            Annuler
+            {t.dashboard.cancel}
           </button>
           <button
             onClick={onConfirm}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
           >
-            Supprimer
+            {t.dashboard.confirmButton}
           </button>
         </div>
       </div>
@@ -56,6 +60,8 @@ function DeleteConfirmationModal({ isOpen, catalogName, onConfirm, onCancel }: D
 }
 
 export default function CatalogPage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
   const [selectedCatalog, setSelectedCatalog] = useState<Catalog | null>(null);
   const [loading, setLoading] = useState(false);
@@ -202,7 +208,8 @@ export default function CatalogPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = language === 'fr' ? 'fr-FR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -259,23 +266,23 @@ export default function CatalogPage() {
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="mt-4">
-          <h1 className="text-3xl font-bold text-gray-900 ml-4">Catalog Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900 ml-4">{t.catalog.title}</h1>
           <p className="mt-2 text-gray-600 ml-4">
-            Upload and manage your product catalog. CSV format with columns: description, unit, unitPrice
+            {t.catalog.description}
           </p>
         </div>
 
         {/* Upload Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            {selectedCatalog ? 'Update Catalog' : 'Upload New Catalog'}
+            {selectedCatalog ? t.catalog.updateCatalog : t.catalog.uploadNewCatalog}
           </h2>
 
           {/* Catalog Selector */}
           {catalogs.length > 0 && (
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select catalog to update (optional)
+                {t.catalog.selectCatalogLabel}
               </label>
               <div className="flex gap-2">
                 <select
@@ -286,10 +293,10 @@ export default function CatalogPage() {
                   }}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 >
-                  <option value="">Create new catalog</option>
+                  <option value="">{t.catalog.createNewCatalog}</option>
                   {catalogs.map((catalog) => (
                     <option key={catalog.id} value={catalog.id}>
-                      {catalog.name} ({catalog.data.length} items)
+                      {catalog.name} ({catalog.data.length} {t.catalog.items})
                     </option>
                   ))}
                 </select>
@@ -298,7 +305,7 @@ export default function CatalogPage() {
                     onClick={() => handleDeleteClick(selectedCatalog.id, selectedCatalog.name)}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition-colors"
                   >
-                    Delete Catalog
+                    {t.catalog.deleteCatalog}
                   </button>
                 )}
               </div>
@@ -348,9 +355,9 @@ export default function CatalogPage() {
 
               <div>
                 <p className="text-base font-medium text-gray-900">
-                  {isDragging ? 'Drop your CSV file here' : 'Drag and drop your CSV file'}
+                  {isDragging ? t.catalog.dropFileHere : t.catalog.dragAndDrop}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">or</p>
+                <p className="text-sm text-gray-600 mt-1">{t.catalog.or}</p>
               </div>
 
               <button
@@ -359,11 +366,11 @@ export default function CatalogPage() {
                 disabled={uploading}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {uploading ? 'Uploading...' : 'Browse files'}
+                {uploading ? t.catalog.uploading : t.catalog.browseFiles}
               </button>
 
               <p className="text-xs text-gray-500">
-                CSV file with columns: description, unit, unitPrice
+                {t.catalog.csvFormat}
               </p>
             </div>
           </div>
@@ -383,7 +390,7 @@ export default function CatalogPage() {
 
           {/* CSV Format Example */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-            <h3 className="text-sm font-semibold text-blue-900 mb-2">CSV Format Example:</h3>
+            <h3 className="text-sm font-semibold text-blue-900 mb-2">{t.catalog.csvFormatExample}</h3>
             <pre className="text-xs text-blue-800 font-mono overflow-x-auto">
               {`description,unit,unitPrice
 Water heater 200L,unit,450.00
@@ -402,7 +409,7 @@ Bathroom mixer,unit,89.99`}
                   {selectedCatalog.name}
                 </h2>
                 <p className="text-sm text-gray-600">
-                  {selectedCatalog.data.length} items • Last updated: {formatDate(selectedCatalog.uploadedAt)}
+                  {selectedCatalog.data.length} {t.catalog.items} • {t.catalog.lastUpdated}: {formatDate(selectedCatalog.uploadedAt)}
                 </p>
               </div>
             </div>
@@ -413,13 +420,13 @@ Bathroom mixer,unit,89.99`}
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
+                      {t.catalog.description}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Unit
+                      {t.catalog.unit}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Unit Price
+                      {t.catalog.unitPrice}
                     </th>
                   </tr>
                 </thead>
@@ -427,7 +434,7 @@ Bathroom mixer,unit,89.99`}
                   {selectedCatalog.data.length === 0 ? (
                     <tr>
                       <td colSpan={3} className="px-6 py-8 text-center text-sm text-gray-500">
-                        No items in catalog
+                        {t.catalog.noItems}
                       </td>
                     </tr>
                   ) : (
@@ -448,17 +455,6 @@ Bathroom mixer,unit,89.99`}
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination info (if needed in the future) */}
-            {selectedCatalog.data.length > 0 && (
-              <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">1</span> to{' '}
-                  <span className="font-medium">{selectedCatalog.data.length}</span> of{' '}
-                  <span className="font-medium">{selectedCatalog.data.length}</span> items
-                </p>
-              </div>
-            )}
           </div>
         )}
 
@@ -478,9 +474,9 @@ Bathroom mixer,unit,89.99`}
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">No catalogs yet</h3>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">{t.catalog.noCatalogsYet}</h3>
             <p className="mt-2 text-sm text-gray-600">
-              Upload your first catalog to get started
+              {t.catalog.uploadFirstCatalog}
             </p>
           </div>
         )}
@@ -489,7 +485,7 @@ Bathroom mixer,unit,89.99`}
         {loading && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-sm text-gray-600">Loading catalogs...</p>
+            <p className="mt-4 text-sm text-gray-600">{t.catalog.loadingCatalogs}</p>
           </div>
         )}
       </div>

@@ -175,7 +175,7 @@ export default function Header() {
                     }}
                     className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    {language === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}
+                    {language === 'en' ? 'FR' : 'EN'}
                   </button>
                   <div className="border-t border-gray-200 my-2"></div>
                   <button
@@ -215,7 +215,7 @@ export default function Header() {
                     }}
                     className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    {language === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}
+                    {language === 'en' ? 'FR' : 'EN'}
                   </button>
                 </>
               )}

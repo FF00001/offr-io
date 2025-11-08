@@ -1,10 +1,10 @@
 [
   {
-    "id": "60eec4b5-b4a1-485d-9dad-48ce5cdff337",
+    "id": "4c3eaf7f-3238-453e-a3c1-9826cd577bcb",
     "userId": "5835960b-f4bf-4ce2-9d70-8b58bc9d1391",
-    "quoteNumber": "DEV-2025-8118",
+    "quoteNumber": "DEV-2025-7779",
     "clientName": "Client Name",
-    "date": "11/6/2025",
+    "date": "11/8/2025",
     "total": 1080,
     "quoteData": {
       "artisan": {
@@ -21,9 +21,9 @@
         "phone": "",
         "email": ""
       },
-      "quoteNumber": "DEV-2025-8118",
-      "date": "11/6/2025",
-      "validUntil": "12/6/2025",
+      "quoteNumber": "DEV-2025-7779",
+      "date": "11/8/2025",
+      "validUntil": "12/8/2025",
       "items": [
         {
           "description": "200L electric water heater - vertical installation",
@@ -81,14 +81,14 @@
       "total": 1080,
       "notes": "Quote generated automatically. Thank you for your trust."
     },
-    "createdAt": "2025-11-06T19:44:31.232Z"
+    "createdAt": "2025-11-08T15:39:22.389Z"
   },
   {
-    "id": "8b2ad4c3-50e7-4862-8383-c4c590d8c783",
+    "id": "df8d041e-8afe-49b4-ab8e-21e41aedb823",
     "userId": "5835960b-f4bf-4ce2-9d70-8b58bc9d1391",
-    "quoteNumber": "DEV-2025-4520",
+    "quoteNumber": "DEV-2025-8224",
     "clientName": "Client Name",
-    "date": "11/6/2025",
+    "date": "11/8/2025",
     "total": 1080,
     "quoteData": {
       "artisan": {
@@ -105,9 +105,9 @@
         "phone": "",
         "email": ""
       },
-      "quoteNumber": "DEV-2025-4520",
-      "date": "11/6/2025",
-      "validUntil": "12/6/2025",
+      "quoteNumber": "DEV-2025-8224",
+      "date": "11/8/2025",
+      "validUntil": "12/8/2025",
       "items": [
         {
           "description": "200L electric water heater - vertical installation",
@@ -165,6 +165,6 @@
       "total": 1080,
       "notes": "Quote generated automatically. Thank you for your trust."
     },
-    "createdAt": "2025-11-06T19:44:33.361Z"
+    "createdAt": "2025-11-08T15:40:02.024Z"
   }
 ]
