@@ -1,8 +1,11 @@
-import { neon } from '@neondatabase/serverless';
+import postgres from 'postgres';
 import { User, SavedQuote, Catalog, AgentInvitation, Template } from '@/types/user';
 
-// Initialize Neon client
-const sql = neon(process.env.POSTGRES_URL!);
+// Initialize Postgres client
+const sql = postgres(process.env.POSTGRES_URL!, {
+  ssl: 'require',
+  max: 1, // Serverless-friendly: reuse connections
+});
 
 // Database row types (snake_case from Postgres)
 interface UserRow {
