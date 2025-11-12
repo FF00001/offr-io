@@ -223,17 +223,33 @@ export async function createUser(user: User): Promise<void> {
 export async function updateUser(id: string, updates: Partial<User>): Promise<void> {
   try {
     const setParts: string[] = [];
+    const values: any[] = [];
     
-    if (updates.name !== undefined) setParts.push(`name = '${updates.name}'`);
-    if (updates.email !== undefined) setParts.push(`email = '${updates.email}'`);
-    if (updates.passwordHash !== undefined) setParts.push(`password = '${updates.passwordHash}'`);
-    if (updates.accountType !== undefined) setParts.push(`account_type = '${updates.accountType}'`);
-    if (updates.enterpriseId !== undefined) setParts.push(`enterprise_id = '${updates.enterpriseId}'`);
+    if (updates.name !== undefined) {
+      setParts.push(`name = $${values.length + 1}`);
+      values.push(updates.name);
+    }
+    if (updates.email !== undefined) {
+      setParts.push(`email = $${values.length + 1}`);
+      values.push(updates.email);
+    }
+    if (updates.passwordHash !== undefined) {
+      setParts.push(`password = $${values.length + 1}`);
+      values.push(updates.passwordHash);
+    }
+    if (updates.accountType !== undefined) {
+      setParts.push(`account_type = $${values.length + 1}`);
+      values.push(updates.accountType);
+    }
+    if (updates.enterpriseId !== undefined) {
+      setParts.push(`enterprise_id = $${values.length + 1}`);
+      values.push(updates.enterpriseId);
+    }
 
     if (setParts.length === 0) return;
 
-    const query = `UPDATE users SET ${setParts.join(', ')} WHERE id = '${id}'`;
-    await sql([query] as any);
+    values.push(id);
+    await sql.unsafe(`UPDATE users SET ${setParts.join(', ')} WHERE id = $${values.length}`, values);
   } catch (error) {
     console.error('Error updating user:', error);
     throw error;
@@ -386,15 +402,25 @@ export async function createCatalog(catalog: Catalog): Promise<void> {
 export async function updateCatalog(id: string, updates: Partial<Catalog>): Promise<void> {
   try {
     const setParts: string[] = [];
+    const values: any[] = [];
     
-    if (updates.name !== undefined) setParts.push(`name = '${updates.name}'`);
-    if (updates.data !== undefined) setParts.push(`data = '${JSON.stringify(updates.data)}'::jsonb`);
-    if (updates.uploadedAt !== undefined) setParts.push(`uploaded_at = '${updates.uploadedAt}'`);
+    if (updates.name !== undefined) {
+      setParts.push(`name = $${values.length + 1}`);
+      values.push(updates.name);
+    }
+    if (updates.data !== undefined) {
+      setParts.push(`data = $${values.length + 1}::jsonb`);
+      values.push(JSON.stringify(updates.data));
+    }
+    if (updates.uploadedAt !== undefined) {
+      setParts.push(`uploaded_at = $${values.length + 1}`);
+      values.push(updates.uploadedAt);
+    }
 
     if (setParts.length === 0) return;
 
-    const query = `UPDATE catalogs SET ${setParts.join(', ')} WHERE id = '${id}'`;
-    await sql([query] as any);
+    values.push(id);
+    await sql.unsafe(`UPDATE catalogs SET ${setParts.join(', ')} WHERE id = $${values.length}`, values);
   } catch (error) {
     console.error('Error updating catalog:', error);
     throw error;
@@ -556,15 +582,29 @@ export async function createTemplate(template: Template): Promise<void> {
 
 export async function updateTemplate(id: string, updates: Partial<Template>): Promise<void> {
   try {
-    const setParts: string[] = [`updated_at = '${new Date().toISOString()}'`];
+    const setParts: string[] = [];
+    const values: any[] = [new Date().toISOString()];
+    setParts.push(`updated_at = $1`);
     
-    if (updates.name !== undefined) setParts.push(`name = '${updates.name}'`);
-    if (updates.fileName !== undefined) setParts.push(`file_name = '${updates.fileName}'`);
-    if (updates.fileData !== undefined) setParts.push(`file_data = '${updates.fileData}'`);
-    if (updates.fileSize !== undefined) setParts.push(`file_size = ${updates.fileSize}`);
+    if (updates.name !== undefined) {
+      setParts.push(`name = $${values.length + 1}`);
+      values.push(updates.name);
+    }
+    if (updates.fileName !== undefined) {
+      setParts.push(`file_name = $${values.length + 1}`);
+      values.push(updates.fileName);
+    }
+    if (updates.fileData !== undefined) {
+      setParts.push(`file_data = $${values.length + 1}`);
+      values.push(updates.fileData);
+    }
+    if (updates.fileSize !== undefined) {
+      setParts.push(`file_size = $${values.length + 1}`);
+      values.push(updates.fileSize);
+    }
 
-    const query = `UPDATE templates SET ${setParts.join(', ')} WHERE id = '${id}'`;
-    await sql([query] as any);
+    values.push(id);
+    await sql.unsafe(`UPDATE templates SET ${setParts.join(', ')} WHERE id = $${values.length}`, values);
   } catch (error) {
     console.error('Error updating template:', error);
     throw error;
