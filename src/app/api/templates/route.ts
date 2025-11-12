@@ -14,7 +14,7 @@ export async function GET() {
       );
     }
 
-    const templates = getTemplatesByUserId(session.id);
+    const templates = await getTemplatesByUserId(session.id);
     return NextResponse.json({ templates });
   } catch (error) {
     console.error('Get templates error:', error);
@@ -36,26 +36,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, content } = await request.json();
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    const name = formData.get('name') as string;
 
-    if (!name || !content) {
+    if (!file || !name) {
       return NextResponse.json(
-        { error: 'Template name and content are required' },
+        { error: 'Template file and name are required' },
         { status: 400 }
       );
     }
+
+    // Read file as base64
+    const buffer = await file.arrayBuffer();
+    const base64 = Buffer.from(buffer).toString('base64');
 
     const now = new Date().toISOString();
     const template = {
       id: uuidv4(),
       userId: session.id,
-      name,
-      content,
+      name: name.trim(),
+      fileName: file.name,
+      fileData: base64,
+      fileSize: file.size,
       createdAt: now,
       updatedAt: now,
     };
 
-    createTemplate(template);
+    await createTemplate(template);
 
     return NextResponse.json({ success: true, template });
   } catch (error) {
@@ -78,7 +86,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const { id, name, content } = await request.json();
+    const { id, name } = await request.json();
 
     if (!id) {
       return NextResponse.json(
@@ -87,18 +95,14 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updates: { name?: string; content?: any } = {};
-    if (name !== undefined) updates.name = name;
-    if (content !== undefined) updates.content = content;
-
-    if (Object.keys(updates).length === 0) {
+    if (!name) {
       return NextResponse.json(
-        { error: 'No updates provided' },
+        { error: 'Template name is required' },
         { status: 400 }
       );
     }
 
-    updateTemplate(id, updates);
+    await updateTemplate(id, { name: name.trim() });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -130,7 +134,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    deleteTemplate(id);
+    await deleteTemplate(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -14,5 +14,13 @@
     "accountType": "enterprise",
     "name": "AAA",
     "createdAt": "2025-11-06T07:22:23.177Z"
+  },
+  {
+    "id": "dd18682f-4a69-47c4-a7dc-25e12fe9112d",
+    "email": "cc@example.com",
+    "passwordHash": "$2b$10$7AyaLBho6WvM3Hgynpfop.jdl9oEiq9cq1USINLF3uNGapNgy5yJC",
+    "accountType": "agent",
+    "name": "CC",
+    "createdAt": "2025-11-12T20:03:31.112Z"
   }
 ]

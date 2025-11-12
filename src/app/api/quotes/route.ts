@@ -14,7 +14,7 @@ export async function GET() {
       );
     }
 
-    const quotes = getQuotesByUserId(session.id);
+    const quotes = await getQuotesByUserId(session.id);
     return NextResponse.json({ quotes });
   } catch (error) {
     console.error('Get quotes error:', error);
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    createQuote(savedQuote);
+    await createQuote(savedQuote);
 
     return NextResponse.json({ success: true, quote: savedQuote });
   } catch (error) {
@@ -73,7 +73,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { id } = await request.json();
-    deleteQuote(id);
+    await deleteQuote(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

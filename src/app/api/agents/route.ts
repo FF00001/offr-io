@@ -21,8 +21,8 @@ export async function GET() {
       );
     }
 
-    const users = getUsers();
-    const invitations = getInvitations();
+    const users = await getUsers();
+    const invitations = await getInvitations();
 
     // Get agents that belong to this enterprise
     const enterpriseAgents = users.filter(
@@ -97,7 +97,7 @@ export async function DELETE(request: NextRequest) {
 
     if (type === 'created') {
       // Delete an agent user
-      const user = getUserById(id);
+      const user = await getUserById(id);
       if (!user) {
         return NextResponse.json(
           { error: 'Agent not found' },
@@ -115,11 +115,11 @@ export async function DELETE(request: NextRequest) {
 
       // Delete the user
       const { deleteUser } = await import('@/lib/db');
-      deleteUser(id);
+      await deleteUser(id);
     } else if (type === 'pending') {
       // Delete a pending invitation
       const { deleteInvitation } = await import('@/lib/db');
-      deleteInvitation(id);
+      await deleteInvitation(id);
     } else {
       return NextResponse.json(
         { error: 'Invalid type' },

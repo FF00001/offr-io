@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    createInvitation(invitation);
+    await createInvitation(invitation);
 
     // Send invitation email
     const invitationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/signup?token=${token}`;

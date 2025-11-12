@@ -15,7 +15,7 @@ export async function GET() {
       );
     }
 
-    const catalogs = getCatalogsByUserId(session.id);
+    const catalogs = await getCatalogsByUserId(session.id);
     return NextResponse.json({ catalogs });
   } catch (error) {
     console.error('Get catalogs error:', error);
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       uploadedAt: new Date().toISOString(),
     };
 
-    createCatalog(catalog);
+    await createCatalog(catalog);
 
     return NextResponse.json({ success: true, catalog });
   } catch (error) {
@@ -133,7 +133,7 @@ export async function PUT(request: NextRequest) {
       unitPrice: parseFloat(row.unitPrice || '0'),
     }));
 
-    updateCatalog(catalogId, {
+    await updateCatalog(catalogId, {
       data: catalogItems,
       uploadedAt: new Date().toISOString(),
     });
@@ -169,7 +169,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    deleteCatalog(catalogId);
+    await deleteCatalog(catalogId);
 
     return NextResponse.json({ success: true });
   } catch (error) {

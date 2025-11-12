@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Check invitation token if provided
     let enterpriseId: string | undefined;
     if (invitationToken) {
-      const invitation = getInvitationByToken(invitationToken);
+      const invitation = await getInvitationByToken(invitationToken);
       if (!invitation) {
         return NextResponse.json(
           { error: 'Invalid invitation token' },
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         );
       }
       enterpriseId = invitation.enterpriseId;
-      markInvitationAsUsed(invitationToken);
+      await markInvitationAsUsed(invitationToken);
     }
 
     // Register user

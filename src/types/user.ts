@@ -56,7 +56,9 @@ export interface Template {
   id: string;
   userId: string;
   name: string;
-  content: any; // Template content (could be JSON)
+  fileName: string;
+  fileData: string;
+  fileSize: number;
   createdAt: string;
   updatedAt: string;
 }

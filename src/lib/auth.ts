@@ -19,7 +19,7 @@ export async function registerUser(
   enterpriseId?: string
 ): Promise<{ success: boolean; error?: string; user?: User }> {
   // Check if user already exists
-  const existingUser = getUserByEmail(email);
+  const existingUser = await getUserByEmail(email);
   if (existingUser) {
     return { success: false, error: 'Email already registered' };
   }
@@ -38,7 +38,7 @@ export async function registerUser(
     ...(enterpriseId && { enterpriseId }),
   };
 
-  createUser(user);
+  await createUser(user);
 
   return { success: true, user };
 }
@@ -47,7 +47,7 @@ export async function authenticateUser(
   email: string,
   password: string
 ): Promise<{ success: boolean; error?: string; user?: User }> {
-  const user = getUserByEmail(email);
+  const user = await getUserByEmail(email);
   
   if (!user) {
     return { success: false, error: 'Invalid email or password' };
